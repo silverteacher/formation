@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz IA</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+    .quiz-container {
+      max-width: 700px;
+      margin: 20px auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    .quiz-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .quiz-header img {
+      height: 50px;
+    }
+    .quiz-title {
+      margin: 0;
+      font-size: 24px;
+    }
+    .sound-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .question-card {
+      margin-top: 20px;
+    }
+    .question-text {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+    .answers-container {
+      display: flex;
+      flex-direction: column;
+    }
+    .answer-option {
+      background-color: #e4e4e4;
+      border: none;
+      padding: 10px;
+      margin: 5px 0;
+      cursor: pointer;
+      border-radius: 5px;
+      text-align: left;
+    }
+    .answer-option.correct {
+      background-color: #c8e6c9;
+    }
+    .answer-option.incorrect {
+      background-color: #ffcdd2;
+    }
+    .results-card {
+      display: none;
+      text-align: center;
+      margin-top: 30px;
+    }
+    .results-card img {
+      max-width: 200px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <div class="quiz-header">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIA..." alt="IA" />
+      <h1 class="quiz-title">Quiz IA</h1>
+      <button class="sound-toggle" onclick="toggleSound()">🔊</button>
+    </div>
+    <div id="questionsContainer"></div>
+    <div class="results-card" id="resultsCard">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIA..." alt="résultat" />
+      <h2 id="finalScore"></h2>
+      <button onclick="restartQuiz()">Recommencer</button>
+    </div>
+  </div>
+
+  <audio id="soundCorrect" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAIlYAAESsAAACABAAZGF0YQAAAAA=">
+  </audio>
+  <audio id="soundIncorrect" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAIlYAAESsAAACABAAZGF0YQAAAAA=">
+  </audio>
+
+  <script>
+    const allQuestions = [
+      {
+        question: "Quel est l'objectif principal du diagnostic de maturité numérique dans le pilotage de l'IA ?",
+        answers: [
+          "Identifier les ressources financières nécessaires",
+          "Mesurer l'impact des formations IA sur les élèves",
+          "Connaître le niveau de compétence en IA des enseignants",
+          "Déterminer le point de départ pour élaborer une stratégie"
+        ],
+        correct: 3
+      },
+      // Ajoute ici les autres questions dans le même format
+    ];
+
+    let questions = [];
+    let current = 0;
+    let score = 0;
+    let soundEnabled = true;
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function pickQuestions() {
+      return shuffle([...allQuestions]).slice(0, 6).map(q => {
+        const shuffledAnswers = shuffle([...q.answers]);
+        return {
+          question: q.question,
+          answers: shuffledAnswers,
+          correct: shuffledAnswers.indexOf(q.answers[q.correct])
+        };
+      });
+    }
+
+    function displayQuestion() {
+      const q = questions[current];
+      const container = document.getElementById("questionsContainer");
+      container.innerHTML = `
+        <div class="question-card">
+          <div class="question-text">${q.question}</div>
+          <div class="answers-container">
+            ${q.answers.map((ans, i) =>
+              `<div class="answer-option" onclick="selectAnswer(${i})">${ans}</div>`).join('')}
+          </div>
+        </div>`;
+    }
+
+    function selectAnswer(index) {
+      const q = questions[current];
+      const options = document.querySelectorAll('.answer-option');
+      options.forEach(opt => opt.style.pointerEvents = 'none');
+
+      if (index === q.correct) {
+        score++;
+        options[index].classList.add('correct');
+        if (soundEnabled) document.getElementById('soundCorrect').play();
+      } else {
+        options[index].classList.add('incorrect');
+        options[q.correct].classList.add('correct');
+        if (soundEnabled) document.getElementById('soundIncorrect').play();
+      }
+
+      setTimeout(() => {
+        current++;
+        if (current < questions.length) {
+          displayQuestion();
+        } else {
+          showResults();
+        }
+      }, 1000);
+    }
+
+    function showResults() {
+      document.getElementById("questionsContainer").style.display = "none";
+      const results = document.getElementById("resultsCard");
+      results.style.display = "block";
+      document.getElementById("finalScore").textContent = `Votre score : ${score}/6`;
+    }
+
+    function restartQuiz() {
+      questions = pickQuestions();
+      current = 0;
+      score = 0;
+      document.getElementById("questionsContainer").style.display = "block";
+      document.getElementById("resultsCard").style.display = "none";
+      displayQuestion();
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      document.querySelector(".sound-toggle").textContent = soundEnabled ? "🔊" : "🔇";
+    }
+
+    restartQuiz();
+  </script>
+</body>
+</html>
