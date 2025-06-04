@@ -1,0 +1,96 @@
+<title>Checklist Transition année scolaire 2025 - ENT HDF</title>
+    
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .card-shadow { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .check-item { border-left: 3px solid #10b981; }
+        @media print {
+            body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+        }
+    </style>
+
+
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="gradient-bg rounded-lg p-4 mb-4 text-white">
+            <h1 class="text-2xl font-bold text-center mb-2">✅ Checklist numérique – Transition d'année scolaire 2025</h1>
+            <h2 class="text-lg font-semibold text-center mb-1">(ENT HDF)</h2>
+            <p class="text-center text-sm opacity-90">Cette liste vous guide pas à pas pour préparer efficacement la nouvelle année scolaire sur l'ENT HDF.</p>
+        </div>
+
+        <!-- Content in 3 columns -->
+        <div class="grid grid-cols-3 gap-4">
+            <!-- Column 1: Gestion des comptes et des groupes -->
+            <div class="bg-white rounded-lg card-shadow p-4">
+                <h3 class="text-lg font-semibold mb-3 text-blue-600 border-b border-blue-200 pb-2">🔄 Gestion des comptes et des groupes</h3>
+                
+                <div class="space-y-3 text-sm">
+                    <div class="check-item pl-3 py-2 bg-green-50 rounded">
+                        <p class="font-medium text-gray-800">Vérifier les rattachements des enseignants</p>
+                        <p class="text-gray-600 mt-1">Assurez-vous que chaque enseignant est correctement rattaché à son établissement pour l'année à venir.</p>
+                    </div>
+                    
+                    <div class="check-item pl-3 py-2 bg-green-50 rounded">
+                        <p class="font-medium text-gray-800">Supprimer les groupes manuels obsolètes</p>
+                        <p class="text-gray-600 mt-1">Éliminez les groupes créés manuellement qui ne seront plus utilisés, à l'exception de ceux nécessaires comme le groupe "Resp Affect Gar".</p>
+                    </div>
+                    
+                    <div class="check-item pl-3 py-2 bg-green-50 rounded">
+                        <p class="font-medium text-gray-800">Supprimer les favoris de partage inutiles</p>
+                        <p class="text-gray-600 mt-1">Nettoyez les favoris de partage qui ne sont plus pertinents pour éviter toute confusion.</p>
+                    </div>
+                    
+                    <div class="check-item pl-3 py-2 bg-red-50 rounded border-l-red-500">
+                        <p class="font-medium text-gray-800">Bloquer les comptes avant la rentrée</p>
+                        <p class="text-gray-600 mt-1">Verrouillez les comptes pour éviter des connexions prématurées et garantir que les données soient à jour lors de la réouverture.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column 2: Gestion des contenus et des partages -->
+            <div class="bg-white rounded-lg card-shadow p-4">
+                <h3 class="text-lg font-semibold mb-3 text-purple-600 border-b border-purple-200 pb-2">📁 Gestion des contenus et des partages</h3>
+                
+                <div class="space-y-3 text-sm">
+                    <div class="check-item pl-3 py-2 bg-green-50 rounded">
+                        <p class="font-medium text-gray-800">Sauvegarder les contenus importants</p>
+                        <p class="text-gray-600 mt-1">Assurez-vous que tous les documents, cours et ressources pédagogiques importants sont sauvegardés.</p>
+                    </div>
+                    
+                    <div class="check-item pl-3 py-2 bg-green-50 rounded">
+                        <p class="font-medium text-gray-800">Transférer les contenus aux enseignants concernés</p>
+                        <p class="text-gray-600 mt-1">Si vous quittez l'établissement ou changez de classe, partagez les contenus pertinents avec les enseignants qui en auront besoin.</p>
+                    </div>
+                    
+                    <div class="check-item pl-3 py-2 bg-yellow-50 rounded border-l-yellow-500">
+                        <p class="font-medium text-gray-800">Vérifier les partages de contenus</p>
+                        <p class="text-gray-600 mt-1">Les partages réalisés avec des groupes préétablis seront supprimés. Les partages avec des personnes spécifiques ou des groupes manuels seront conservés.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column 3: Préparation technique -->
+            <div class="bg-white rounded-lg card-shadow p-4">
+                <h3 class="text-lg font-semibold mb-3 text-orange-600 border-b border-orange-200 pb-2">🛠️ Préparation technique</h3>
+                
+                <div class="space-y-3 text-sm">
+                    <div class="check-item pl-3 py-2 bg-green-50 rounded">
+                        <p class="font-medium text-gray-800">Gérer les doublons</p>
+                        <p class="text-gray-600 mt-1">Identifiez et résolvez les éventuels doublons de comptes pour éviter des problèmes d'accès.</p>
+                    </div>
+                    
+                    <div class="check-item pl-3 py-2 bg-blue-50 rounded border-l-blue-500">
+                        <p class="font-medium text-gray-800">Créer un blog public pour les familles</p>
+                        <p class="text-gray-600 mt-1">Si nécessaire, mettez en place un blog public pour fournir des informations générales aux familles n'ayant pas encore obtenu de compte ENT.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-4 text-center text-sm text-gray-500">
+            <p>Guide de transition pour l'année scolaire 2025 - ENT Hauts-de-France</p>
+        </div>
+    </div>
