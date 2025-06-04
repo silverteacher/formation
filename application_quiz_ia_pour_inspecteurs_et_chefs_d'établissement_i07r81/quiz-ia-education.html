@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz IA - Éducation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .quiz-card:hover {
+            transform: translateY(-2px);
+            transition: transform 0.2s ease-in-out;
+        }
+        .progress-bar {
+            transition: width 0.3s ease-in-out;
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div id="app">
+        <!-- Header -->
+        <header class="sticky top-0 z-10 bg-white/80 backdrop-blur-sm h-16 flex justify-between items-center border-b shadow-sm px-4">
+            <h2 class="text-xl font-semibold text-blue-600">Quiz IA - Éducation</h2>
+            <button id="changeProfile" class="text-blue-600 hover:text-blue-800 font-medium hidden" onclick="showProfileSelection()">
+                Changer de profil
+            </button>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-4">
+            <!-- Profile Selection -->
+            <div id="profileSelection" class="max-w-4xl mx-auto fade-in">
+                <div class="text-center mb-12">
+                    <h1 class="text-4xl font-bold text-gray-900 mb-4">
+                        Quiz de Connaissances IA
+                    </h1>
+                    <p class="text-xl text-gray-600 mb-6">
+                        Testez vos connaissances sur l'Intelligence Artificielle dans l'éducation
+                    </p>
+                    <p class="text-gray-500">
+                        Sélectionnez votre profil pour accéder aux quiz adaptés
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                    <!-- Profil Inspecteur -->
+                    <div class="quiz-card bg-white rounded-lg shadow-lg p-8 hover:shadow-xl transition-shadow cursor-pointer border-2 border-transparent hover:border-blue-200"
+                         onclick="selectProfile('inspector')">
+                        <div class="text-center">
+                            <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <span class="text-3xl">🔍</span>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4">Inspecteur</h3>
+                            <p class="text-gray-600 mb-6">
+                                Quiz spécialisés sur l'utilisation de l'IA dans l'inspection pédagogique, 
+                                l'analyse des pratiques d'enseignement et l'évaluation des établissements.
+                            </p>
+                            <div class="bg-blue-50 rounded-lg p-4 mb-6">
+                                <h4 class="font-semibold text-blue-900 mb-2">Thèmes abordés :</h4>
+                                <ul class="text-sm text-blue-800 space-y-1">
+                                    <li>• Analyse des données pédagogiques</li>
+                                    <li>• Outils d'aide à l'inspection</li>
+                                    <li>• Éthique et transparence</li>
+                                    <li>• Accompagnement des équipes</li>
+                                </ul>
+                            </div>
+                            <button class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                                Accéder aux quiz Inspecteur
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Profil Chef d'Établissement -->
+                    <div class="quiz-card bg-white rounded-lg shadow-lg p-8 hover:shadow-xl transition-shadow cursor-pointer border-2 border-transparent hover:border-green-200"
+                         onclick="selectProfile('chef_etablissement')">
+                        <div class="text-center">
+                            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <span class="text-3xl">🏫</span>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4">Chef d'Établissement</h3>
+                            <p class="text-gray-600 mb-6">
+                                Quiz dédiés à l'intégration de l'IA dans la gestion d'établissement, 
+                                l'optimisation des ressources et le pilotage pédagogique.
+                            </p>
+                            <div class="bg-green-50 rounded-lg p-4 mb-6">
+                                <h4 class="font-semibold text-green-900 mb-2">Thèmes abordés :</h4>
+                                <ul class="text-sm text-green-800 space-y-1">
+                                    <li>• Gestion des emplois du temps</li>
+                                    <li>• Ressources humaines</li>
+                                    <li>• Pilotage et indicateurs</li>
+                                    <li>• Communication et relations</li>
+                                </ul>
+                            </div>
+                            <button class="w-full bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition-colors font-medium">
+                                Accéder aux quiz Chef d'Établissement
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Dashboard -->
+            <div id="quizDashboard" class="max-w-6xl mx-auto hidden fade-in">
+                <div class="mb-8 text-center">
+                    <h1 id="dashboardTitle" class="text-3xl font-bold text-gray-900 mb-2"></h1>
+                    <p class="text-gray-600">Quiz spécialisés pour votre profil professionnel</p>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Navigation -->
+                    <div class="flex space-x-4 border-b">
+                        <button id="quizzesTab" onclick="showQuizzesTab()" class="px-4 py-2 font-medium border-b-2 border-blue-600 text-blue-600">
+                            Quiz Disponibles
+                        </button>
+                        <button id="resultsTab" onclick="showResultsTab()" class="px-4 py-2 font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700">
+                            Mes Résultats
+                        </button>
+                    </div>
+
+                    <!-- Quiz List -->
+                    <div id="quizList" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3"></div>
+
+                    <!-- Results History -->
+                    <div id="resultsHistory" class="hidden"></div>
+                </div>
+            </div>
+
+            <!-- Quiz Taker -->
+            <div id="quizTaker" class="max-w-4xl mx-auto hidden fade-in">
+                <!-- Quiz content will be dynamically generated -->
+            </div>
+
+            <!-- Quiz Results -->
+            <div id="quizResults" class="max-w-4xl mx-auto hidden fade-in">
+                <!-- Results content will be dynamically generated -->
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Quiz data avec plus de questions
+        const quizData = {
+            inspector: [
+                {
+                    id: 'inspector-1',
+                    title: 'IA et Inspection Pédagogique - Niveau 1',
+                    description: 'Évaluez vos connaissances de base sur l\'utilisation de l\'IA dans l\'inspection pédagogique',
+                    difficulty: 'debutant',
+                    questions: [
+                        {
+                            question: 'Quel est le principal avantage de l\'IA dans l\'analyse des pratiques pédagogiques ?',
+                            options: [
+                                'Remplacer complètement l\'inspecteur',
+                                'Analyser de grandes quantités de données rapidement',
+                                'Éliminer le besoin d\'observation en classe',
+                                'Automatiser les rapports d\'inspection'
+                            ],
+                            correctAnswer: 1,
+                            explanation: 'L\'IA excelle dans l\'analyse rapide de grandes quantités de données, permettant aux inspecteurs de détecter des tendances et patterns.',
+                            points: 10
+                        },
+                        {
+                            question: 'Dans le contexte de l\'inspection, l\'IA peut aider à :',
+                            options: [
+                                'Personnaliser les formations des enseignants',
+                                'Prédire les résultats des élèves',
+                                'Identifier les besoins d\'accompagnement',
+                                'Toutes les réponses ci-dessus'
+                            ],
+                            correctAnswer: 3,
+                            explanation: 'L\'IA peut effectivement contribuer à tous ces aspects de l\'inspection pédagogique.',
+                            points: 15
+                        },
+                        {
+                            question: 'Quelle précaution éthique est essentielle lors de l\'utilisation d\'IA en inspection ?',
+                            options: [
+                                'Utiliser uniquement des algorithmes propriétaires',
+                                'Garantir la transparence et l\'explicabilité des décisions',
+                                'Automatiser toutes les évaluations',
+                                'Éviter toute intervention humaine'
+                            ],
+                            correctAnswer: 1,
+                            explanation: 'La transparence et l\'explicabilité sont cruciales pour maintenir la confiance et l\'équité dans le processus d\'inspection.',
+                            points: 20
+                        },
+                        {
+                            question: 'L\'IA peut aider les inspecteurs à identifier :',
+                            options: [
+                                'Les pratiques pédagogiques innovantes',
+                                'Les difficultés d\'apprentissage des élèves',
+                                'Les besoins de formation des enseignants',
+                                'Toutes les réponses ci-dessus'
+                            ],
+                            correctAnswer: 3,
+                            explanation: 'L\'IA peut analyser de multiples aspects pour fournir une vision globale des besoins éducatifs.',
+                            points: 15
+                        },
+                        {
+                            question: 'Quel type de données l\'IA peut-elle analyser pour l\'inspection ?',
+                            options: [
+                                'Uniquement les résultats scolaires',
+                                'Les interactions en classe, résultats et méthodes pédagogiques',
+                                'Seulement les rapports d\'enseignants',
+                                'Uniquement les données administratives'
+                            ],
+                            correctAnswer: 1,
+                            explanation: 'L\'IA peut analyser une variété de données pour donner une vue d\'ensemble complète.',
+                            points: 10
+                        }
+                    ]
+                },
+                {
+                    id: 'inspector-2',
+                    title: 'IA et Inspection Pédagogique - Niveau 2',
+                    description: 'Approfondissez vos connaissances sur les applications avancées de l\'IA en inspection',
+                    difficulty: 'intermediaire',
+                    questions: [
+                        {
+                            question: 'Comment l\'IA peut-elle améliorer l\'objectivité des évaluations ?',
+                            options: [
+                                'En éliminant complètement le facteur humain',
+                                'En fournissant des analyses basées sur des données factuelles',
+                                'En automatisant toutes les décisions',
+                                'En remplaçant les grilles d\'évaluation'
+                            ],
+                            correctAnswer: 1,
+                            explanation: 'L\'IA fournit des analyses objectives basées sur des données, complétant l\'expertise humaine.',
+                            points: 15
+                        },
+                        {
+                            question: 'Quel est le rôle de l\'IA dans la détection des inégalités scolaires ?',
+                            options: [
+                                'Elle ne peut pas détecter les inégalités',
+                                'Elle peut identifier des patterns d\'inégalités dans les données',
+                                'Elle résout automatiquement les inégalités',
+                                'Elle remplace l\'analyse sociologique'
+                            ],
+                            correctAnswer: 1,
+                            explanation: 'L\'IA peut identifier des patterns et corrélations révélant des inégalités systémiques.',
+                            points: 20
+                        },
+                        {
+                            question: 'Dans l\'analyse des pratiques pédagogiques, l\'IA peut :',
+                            options: [
+                                'Évaluer l\'efficacité des méthodes d\'enseignement',
+                                'Suggérer des améliorations personnalisées',
+                                'Identifier les bonnes pratiques à diffuser',
+                                'Toutes les réponses ci-dessus'
+                            ],
+                            correctAnswer: 3,
+                            explanation: 'L\'IA peut contribuer à tous ces aspects de l\'amélioration pédagogique.',
+                            points: 15
+                        }
+                    ]
+                }
+            ],
+            chef_etablissement: [
+                {
+                    id: 'chef-1',
+                    title: 'IA et Gestion d\'Établissement - Niveau 1',
+                    description: 'Découvrez les bases de l\'intégration de l\'IA dans la gestion d\'établissement scolaire',
+                    difficulty: 'debutant',
+                    questions: [
+                        {
+                            question: 'Comment l\'IA peut-elle améliorer la gestion des emplois du temps ?',
+                            options: [
+                                'En créant des emplois du temps parfaits automatiquement',
+                                'En optimisant les contraintes et ressources disponibles',
+                                'En éliminant le besoin de planification',
+                                'En remplaçant les logiciels existants'
+                            ],
+                            correctAnswer: 1,
+                            explanation: 'L\'IA peut optimiser la répartition des ressources en tenant compte de multiples contraintes simultanément.',
+                            points: 10
+                        },
+                        {
+                            question: 'Dans la gestion des ressources humaines, l\'IA peut aider à :',
+                            options: [
+                                'Recruter automatiquement les enseignants',
+                                'Analyser les besoins en formation du personnel',
+                                'Remplacer les entretiens individuels',
+                                'Éliminer les conflits'
+                            ],
+                            correctAnswer: 1,
+                            explanation: 'L\'IA peut analyser les données de performance et identifier les besoins de formation personnalisés.',
+                            points: 15
+                        },
+                        {
+                            question: 'Quel est un risque majeur de l\'IA dans la gestion d\'établissement ?',
+                            options: [
+                                'La réduction des coûts',
+                                'L\'amélioration de l\'efficacité',
+                                'La déshumanisation des relations',
+                                'L\'automatisation des tâches'
+                            ],
+                            correctAnswer: 2,
+                            explanation: 'Le principal risque est de perdre l\'aspect humain essentiel dans la gestion d\'un établissement scolaire.',
+                            points: 20
+                        },
+                        {
+                            question: 'L\'IA peut aider dans la gestion financière en :',
+                            options: [
+                                'Prédisant les besoins budgétaires',
+                                'Optimisant l\'allocation des ressources',
+                                'Détectant les anomalies de dépenses',
+                                'Toutes les réponses ci-dessus'
+                            ],
+                            correctAnswer: 3,
+                            explanation: 'L\'IA peut contribuer à tous ces aspects de la gestion financière.',
+                            points: 15
+                        },
+                        {
+                            question: 'Pour la communication avec les parents, l\'IA peut :',
+                            options: [
+                                'Remplacer complètement les échanges humains',
+                                'Personnaliser les informations selon les besoins',
+                                'Éliminer le besoin de réunions',
+                                'Automatiser toutes les réponses'
+                            ],
+                            correctAnswer: 1,
+                            explanation: 'L\'IA peut personnaliser la communication tout en préservant l\'aspect humain.',
+                            points: 10
+                        }
+                    ]
+                },
+                {
+                    id: 'chef-2',
+                    title: 'IA et Gestion d\'Établissement - Niveau 2',
+                    description: 'Maîtrisez les applications avancées de l\'IA pour le pilotage d\'établissement',
+                    difficulty: 'intermediaire',
+                    questions: [
+                        {
+                            question: 'Comment l\'IA peut-elle améliorer le pilotage pédagogique ?',
+                            options: [
+                                'En fournissant des tableaux de bord en temps réel',
+                                'En prédisant les résultats scolaires',
+                                'En identifiant les élèves à risque',
+                                'Toutes les réponses ci-dessus'
+                            ],
+                            correctAnswer: 3,
+                            explanation: 'L\'IA peut contribuer à tous ces aspects du pilotage pédagogique.',
+                            points: 20
+                        },
+                        {
+                            question: 'Dans la gestion des espaces, l\'IA peut optimiser :',
+                            options: [
+                                'L\'utilisation des salles de classe',
+                                'La maintenance préventive',
+                                'La consommation énergétique',
+                                'Toutes les réponses ci-dessus'
+                            ],
+                            correctAnswer: 3,
+                            explanation: 'L\'IA peut optimiser de nombreux aspects de la gestion des espaces.',
+                            points: 15
+                        },
+                        {
+                            question: 'Pour la sécurité de l\'établissement, l\'IA peut :',
+                            options: [
+                                'Surveiller les accès automatiquement',
+                                'Détecter les comportements anormaux',
+                                'Alerter en cas d\'urgence',
+                                'Toutes les réponses ci-dessus'
+                            ],
+                            correctAnswer: 3,
+                            explanation: 'L\'IA peut renforcer la sécurité sur plusieurs niveaux.',
+                            points: 15
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // Application state
+        let currentProfile = null;
+        let currentQuiz = null;
+        let currentQuestionIndex = 0;
+        let answers = {};
+        let startTime = null;
+        let sessionResults = JSON.parse(localStorage.getItem('quizResults') || '[]');
+        let sessionId = generateSessionId();
+
+        // Utility functions
+        function generateSessionId() {
+            return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${minutes}m ${remainingSeconds}s`;
+        }
+
+        function getScoreColor(percentage) {
+            if (percentage >= 80) return 'text-green-600';
+            if (percentage >= 60) return 'text-yellow-600';
+            return 'text-red-600';
+        }
+
+        function getScoreMessage(percentage) {
+            if (percentage >= 90) return 'Excellent ! Vous maîtrisez parfaitement le sujet.';
+            if (percentage >= 80) return 'Très bien ! Vous avez une bonne compréhension du sujet.';
+            if (percentage >= 60) return 'Bien ! Il y a quelques points à approfondir.';
+            if (percentage >= 40) return 'Passable. Une révision des concepts serait bénéfique.';
+            return 'Il est recommandé de revoir les concepts fondamentaux.';
+        }
+
+        function getDifficultyColor(difficulty) {
+            switch (difficulty) {
+                case 'debutant': return 'bg-green-100 text-green-800';
+                case 'intermediaire': return 'bg-yellow-100 text-yellow-800';
+                case 'avance': return 'bg-red-100 text-red-800';
+                default: return 'bg-gray-100 text-gray-800';
+            }
+        }
+
+        function getCategoryLabel(category) {
+            return category === 'inspector' ? 'Inspecteur' : 'Chef d\'Établissement';
+        }
+
+        // Navigation functions
+        function selectProfile(profile) {
+            currentProfile = profile;
+            showQuizDashboard();
+        }
+
+        function showProfileSelection() {
+            document.getElementById('profileSelection').classList.remove('hidden');
+            document.getElementById('quizDashboard').classList.add('hidden');
+            document.getElementById('quizTaker').classList.add('hidden');
+            document.getElementById('quizResults').classList.add('hidden');
+            document.getElementById('changeProfile').classList.add('hidden');
+            currentProfile = null;
+        }
+
+        function showQuizDashboard() {
+            document.getElementById('profileSelection').classList.add('hidden');
+            document.getElementById('quizDashboard').classList.remove('hidden');
+            document.getElementById('quizTaker').classList.add('hidden');
+            document.getElementById('quizResults').classList.add('hidden');
+            document.getElementById('changeProfile').classList.remove('hidden');
+            
+            const title = currentProfile === 'inspector' ? 'Quiz Inspecteur' : 'Quiz Chef d\'Établissement';
+            document.getElementById('dashboardTitle').textContent = title;
+            
+            renderQuizList();
+            showQuizzesTab();
+        }
+
+        function showQuizzesTab() {
+            document.getElementById('quizzesTab').className = 'px-4 py-2 font-medium border-b-2 border-blue-600 text-blue-600';
+            document.getElementById('resultsTab').className = 'px-4 py-2 font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700';
+            document.getElementById('quizList').classList.remove('hidden');
+            document.getElementById('resultsHistory').classList.add('hidden');
+        }
+
+        function showResultsTab() {
+            document.getElementById('quizzesTab').className = 'px-4 py-2 font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700';
+            document.getElementById('resultsTab').className = 'px-4 py-2 font-medium border-b-2 border-blue-600 text-blue-600';
+            document.getElementById('quizList').classList.add('hidden');
+            document.getElementById('resultsHistory').classList.remove('hidden');
+            renderResultsHistory();
+        }
+
+        function startQuiz(quizId) {
+            currentQuiz = quizData[currentProfile].find(q => q.id === quizId);
+            currentQuestionIndex = 0;
+            answers = {};
+            startTime = Date.now();
+            
+            document.getElementById('quizDashboard').classList.add('hidden');
+            document.getElementById('quizTaker').classList.remove('hidden');
+            
+            renderQuizTaker();
+        }
+
+        function backToQuizDashboard() {
+            document.getElementById('quizTaker').classList.add('hidden');
+            document.getElementById('quizResults').classList.add('hidden');
+            document.getElementById('quizDashboard').classList.remove('hidden');
+        }
+
+        // Quiz functions
+        function selectAnswer(answerIndex) {
+            answers[currentQuestionIndex] = answerIndex;
+            renderQuizTaker();
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < currentQuiz.questions.length - 1) {
+                currentQuestionIndex++;
+                renderQuizTaker();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderQuizTaker();
+            }
+        }
+
+        function allQuestionsAnswered() {
+            return currentQuiz.questions.every((_, index) => answers[index] !== undefined);
+        }
+
+        function submitQuiz() {
+            if (!allQuestionsAnswered()) return;
+
+            const timeSpent = Math.round((Date.now() - startTime) / 1000);
+            let score = 0;
+            let totalPoints = 0;
+            const detailedAnswers = [];
+
+            currentQuiz.questions.forEach((question, index) => {
+                totalPoints += question.points;
+                const isCorrect = answers[index] === question.correctAnswer;
+                const points = isCorrect ? question.points : 0;
+                score += points;
+                
+                detailedAnswers.push({
+                    questionIndex: index,
+                    selectedAnswer: answers[index],
+                    correctAnswer: question.correctAnswer,
+                    isCorrect,
+                    points,
+                    explanation: question.explanation
+                });
+            });
+
+            const percentage = totalPoints > 0 ? Math.round((score / totalPoints) * 100) : 0;
+
+            const result = {
+                id: Date.now(),
+                sessionId,
+                userProfile: currentProfile,
+                quizId: currentQuiz.id,
+                quizTitle: currentQuiz.title,
+                score,
+                totalPoints,
+                percentage,
+                answers: detailedAnswers,
+                completedAt: Date.now(),
+                timeSpent
+            };
+
+            sessionResults.push(result);
+            localStorage.setItem('quizResults', JSON.stringify(sessionResults));
+
+            showQuizResults(result);
+        }
+
+        function showQuizResults(result) {
+            document.getElementById('quizTaker').classList.add('hidden');
+            document.getElementById('quizResults').classList.remove('hidden');
+            renderQuizResults(result);
+        }
+
+        // Rendering functions
+        function renderQuizList() {
+            const quizList = document.getElementById('quizList');
+            const quizzes = quizData[currentProfile] || [];
+            
+            quizList.innerHTML = quizzes.map(quiz => `
+                <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-semibold text-gray-900">${quiz.title}</h3>
+                        <span class="px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(quiz.difficulty)}">
+                            ${quiz.difficulty}
+                        </span>
+                    </div>
+                    <p class="text-gray-600 mb-4">${quiz.description}</p>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                            ${getCategoryLabel(currentProfile)}
+                        </span>
+                        <span class="text-sm text-gray-500">${quiz.questions.length} questions</span>
+                    </div>
+                    <button onclick="startQuiz('${quiz.id}')" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                        Commencer le Quiz
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function renderQuizTaker() {
+            const question = currentQuiz.questions[currentQuestionIndex];
+            const progress = ((currentQuestionIndex + 1) / currentQuiz.questions.length) * 100;
+            
+            document.getElementById('quizTaker').innerHTML = `
+                <!-- En-tête -->
+                <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <button onclick="backToQuizDashboard()" class="text-blue-600 hover:text-blue-800 font-medium">
+                            ← Retour aux quiz
+                        </button>
+                        <span class="text-sm text-gray-500">
+                            Question ${currentQuestionIndex + 1} sur ${currentQuiz.questions.length}
+                        </span>
+                    </div>
+                    <h1 class="text-2xl font-bold text-gray-900">${currentQuiz.title}</h1>
+                    <div class="w-full bg-gray-200 rounded-full h-2 mt-4">
+                        <div class="bg-blue-600 h-2 rounded-full progress-bar" style="width: ${progress}%"></div>
+                    </div>
+                </div>
+
+                <!-- Question actuelle -->
+                <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-6">
+                        ${question.question}
+                    </h2>
+                    
+                    <div class="space-y-3">
+                        ${question.options.map((option, index) => `
+                            <button onclick="selectAnswer(${index})" 
+                                    class="answer-option w-full text-left p-4 rounded-lg border-2 transition-colors ${
+                                        answers[currentQuestionIndex] === index 
+                                            ? 'border-blue-600 bg-blue-50' 
+                                            : 'border-gray-200 hover:border-gray-300'
+                                    }">
+                                <span class="font-medium text-gray-700">
+                                    ${String.fromCharCode(65 + index)}.
+                                </span>
+                                <span class="ml-2">${option}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex justify-between items-center">
+                        <button onclick="previousQuestion()" 
+                                ${currentQuestionIndex === 0 ? 'disabled' : ''}
+                                class="px-4 py-2 text-gray-600 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed">
+                            ← Précédent
+                        </button>
+
+                        <div class="flex space-x-3">
+                            ${currentQuestionIndex < currentQuiz.questions.length - 1 ? `
+                                <button onclick="nextQuestion()" 
+                                        ${answers[currentQuestionIndex] === undefined ? 'disabled' : ''}
+                                        class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed">
+                                    Suivant →
+                                </button>
+                            ` : `
+                                <button onclick="submitQuiz()" 
+                                        ${!allQuestionsAnswered() ? 'disabled' : ''}
+                                        class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed">
+                                    Terminer le Quiz
+                                </button>
+                            `}
+                        </div>
+                    </div>
+
+                    <!-- Indicateur de progression -->
+                    <div class="mt-4 flex justify-center space-x-2">
+                        ${currentQuiz.questions.map((_, index) => `
+                            <div class="w-3 h-3 rounded-full ${
+                                index === currentQuestionIndex
+                                    ? 'bg-blue-600'
+                                    : answers[index] !== undefined
+                                    ? 'bg-green-500'
+                                    : 'bg-gray-300'
+                            }"></div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderQuizResults(result) {
+            document.getElementById('quizResults').innerHTML = `
+                <!-- En-tête -->
+                <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                    <button onclick="backToQuizDashboard()" class="text-blue-600 hover:text-blue-800 font-medium mb-4">
+                        ← Retour au tableau de bord
+                    </button>
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Résultats du Quiz</h1>
+                    <p class="text-gray-600">${result.quizTitle}</p>
+                </div>
+
+                <!-- Score principal -->
+                <div class="bg-white rounded-lg shadow-md p-8 mb-6 text-center">
+                    <div class="text-6xl font-bold mb-4 ${getScoreColor(result.percentage)}">
+                        ${result.percentage}%
+                    </div>
+                    <div class="text-xl text-gray-700 mb-2">
+                        ${result.score} / ${result.totalPoints} points
+                    </div>
+                    <p class="text-gray-600 mb-4">
+                        ${getScoreMessage(result.percentage)}
+                    </p>
+                    <div class="flex justify-center space-x-8 text-sm text-gray-500">
+                        <div>
+                            <span class="font-medium">Temps:</span> ${formatTime(result.timeSpent)}
+                        </div>
+                        <div>
+                            <span class="font-medium">Date:</span> ${new Date(result.completedAt).toLocaleDateString()}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistiques détaillées -->
+                <div class="grid md:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-white rounded-lg shadow-md p-6 text-center">
+                        <div class="text-3xl font-bold text-green-600 mb-2">
+                            ${result.answers.filter(a => a.isCorrect).length}
+                        </div>
+                        <div class="text-gray-600">Bonnes réponses</div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-md p-6 text-center">
+                        <div class="text-3xl font-bold text-red-600 mb-2">
+                            ${result.answers.filter(a => !a.isCorrect).length}
+                        </div>
+                        <div class="text-gray-600">Mauvaises réponses</div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-md p-6 text-center">
+                        <div class="text-3xl font-bold text-blue-600 mb-2">
+                            ${result.answers.length}
+                        </div>
+                        <div class="text-gray-600">Total questions</div>
+                    </div>
+                </div>
+
+                <!-- Détail des réponses -->
+                <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Détail des réponses</h3>
+                    <div class="space-y-4">
+                        ${result.answers.map((answer, index) => {
+                            const question = currentQuiz.questions[answer.questionIndex];
+                            return `
+                                <div class="border rounded-lg p-4 ${answer.isCorrect ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}">
+                                    <div class="flex items-start justify-between mb-2">
+                                        <h4 class="font-medium text-gray-900">Question ${index + 1}</h4>
+                                        <span class="text-sm font-medium ${answer.isCorrect ? 'text-green-600' : 'text-red-600'}">
+                                            ${answer.isCorrect ? '✓ Correct' : '✗ Incorrect'}
+                                        </span>
+                                    </div>
+                                    <p class="text-gray-700 mb-3">${question.question}</p>
+                                    <div class="space-y-2">
+                                        <div class="text-sm">
+                                            <span class="font-medium">Votre réponse:</span>
+                                            <span class="${answer.isCorrect ? 'text-green-600' : 'text-red-600'}">
+                                                ${question.options[answer.selectedAnswer]}
+                                            </span>
+                                        </div>
+                                        ${!answer.isCorrect ? `
+                                            <div class="text-sm">
+                                                <span class="font-medium">Bonne réponse:</span>
+                                                <span class="text-green-600">
+                                                    ${question.options[answer.correctAnswer]}
+                                                </span>
+                                            </div>
+                                        ` : ''}
+                                        <div class="text-sm text-gray-600 bg-white p-2 rounded border-l-4 border-blue-500">
+                                            <span class="font-medium">Explication:</span> ${answer.explanation}
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="bg-white rounded-lg shadow-md p-6 text-center">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Que faire ensuite ?</h3>
+                    <div class="space-y-3">
+                        <button onclick="backToQuizDashboard()" class="w-full md:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                            Essayer d'autres quiz
+                        </button>
+                        ${result.percentage < 80 ? `
+                            <p class="text-sm text-gray-600 mt-2">
+                                Conseil: Révisez les concepts et retentez le quiz pour améliorer votre score !
+                            </p>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderResultsHistory() {
+            const profileResults = sessionResults.filter(r => r.userProfile === currentProfile);
+            
+            if (profileResults.length === 0) {
+                document.getElementById('resultsHistory').innerHTML = `
+                    <div class="text-center py-12">
+                        <div class="text-gray-400 text-6xl mb-4">📊</div>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-2">Aucun résultat</h3>
+                        <p class="text-gray-500">Vous n'avez pas encore passé de quiz pour ce profil.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const totalQuizzes = profileResults.length;
+            const averageScore = Math.round(profileResults.reduce((sum, r) => sum + r.percentage, 0) / totalQuizzes);
+            const bestScore = Math.max(...profileResults.map(r => r.percentage));
+
+            document.getElementById('resultsHistory').innerHTML = `
+                <!-- Statistiques globales -->
+                <div class="grid md:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-white rounded-lg shadow-md p-6 text-center">
+                        <div class="text-3xl font-bold text-blue-600 mb-2">${totalQuizzes}</div>
+                        <div class="text-gray-600">Quiz complétés</div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-md p-6 text-center">
+                        <div class="text-3xl font-bold text-green-600 mb-2">${averageScore}%</div>
+                        <div class="text-gray-600">Score moyen</div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-md p-6 text-center">
+                        <div class="text-3xl font-bold text-purple-600 mb-2">${bestScore}%</div>
+                        <div class="text-gray-600">Meilleur score</div>
+                    </div>
+                </div>
+
+                <!-- Historique des résultats -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900">Historique des Quiz</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quiz</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Temps</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                ${profileResults.reverse().map(result => `
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900">${result.quizTitle}</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium ${
+                                                result.percentage >= 80 ? 'bg-green-100 text-green-800' :
+                                                result.percentage >= 60 ? 'bg-yellow-100 text-yellow-800' :
+                                                'bg-red-100 text-red-800'
+                                            }">
+                                                ${result.percentage}%
+                                            </span>
+                                            <span class="ml-2 text-sm text-gray-500">(${result.score}/${result.totalPoints})</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            ${formatTime(result.timeSpent)}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            ${new Date(result.completedAt).toLocaleDateString('fr-FR')}
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            showProfileSelection();
+        });
+    </script>
+</body>
+</html>
